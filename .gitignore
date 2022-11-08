@@ -1,2 +1,4 @@
 .env
 env
+discord.log
+cogs/__pycache__

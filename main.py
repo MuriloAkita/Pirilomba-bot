@@ -1,58 +1,43 @@
 import os
-import random
 import discord
+import asyncio
 import logging
+from dotenv import load_dotenv
 from discord.ext import commands
+from cogs.example import CogExample
+from cogs.funny import CogFunny
+from pretty_help import PrettyHelp
+
+load_dotenv()
 
 
+# discord.utils.setup_logging()
 handler = logging.FileHandler(
     filename='discord.log', encoding='utf-8', mode='w')
 
 intents = discord.Intents.default()
 intents.message_content = True
 intents.typing = False
-intents.presences = False
+intents.presences = True
+discord.utils.setup_logging()
 
-bot = commands.Bot(command_prefix='.', intents=intents)
+client = commands.Bot(command_prefix='.', intents=intents,
+                      help_command=PrettyHelp())
 
 
-@bot.event
+@client.event
 async def on_ready():
-    print('Estou pronto!')
-
-async def load_extensions():
-     for filename in os.listdir("./commands"):
-        if filename.endswith(".py"):
-            await bot.load_extension(f"cogs.{filename[:-3]}")
+    print(30*'#' + '\n')
+    print(client.user.name, client.user.id, sep=' - ')
+    print('Bot is online.\n')
+    print(30*'#' + '\n')
 
 
-@bot.command()
-async def ping(message):
-    latency = round(bot.latency * 1000)
-    if latency > 70:
-        await message.send(f'{latency}ms, assina uma internet melhor ai !')
-    else:
-        await message.send(f'{latency}ms, net ta ok')
+async def main():
+    async with client:
+        await client.add_cog(CogExample(client))  # Cog de Exemplo *-*
+        await client.add_cog(CogFunny(client))  # Funny Commands
+        await client.start(os.getenv('BOT_TOKEN'))
 
 
-@bot.command()
-async def pirilomba(message, *, question):
-    response = [
-        'Talvez sim...',
-        'Talvez não',
-        'Fique quieto por favor ?',
-        'Claro',
-        'Sim',
-        'É possível',
-        'Inacreditável',
-        'Estou ocupado, vou me retirar...',
-        'Eu não me envolvo com essas coisas',
-        'Eu não',
-        'Tudo bem',
-        'Bom dia',
-    ]
-
-    await message.send(random.choice(response))
-
-
-bot.run(os.getenv('BOT_TOKEN'), log_handler=handler, log_level=logging.DEBUG)
+asyncio.run(main())
