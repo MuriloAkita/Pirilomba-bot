@@ -19,6 +19,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.typing = False
 intents.presences = True
+intents.members = True
 discord.utils.setup_logging()
 
 client = commands.Bot(command_prefix='.', intents=intents,

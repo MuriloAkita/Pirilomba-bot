@@ -44,7 +44,8 @@ class CogFunny(commands.Cog):
     @commands.command()
     async def marry(self, ctx, mention):
 
-        member = ctx.guild.get_member_named(mention)
+        member = ctx.guild.get_member(int(mention.strip('<>@')))
+
         if member:
             avatar = member.avatar
             name = member.name
