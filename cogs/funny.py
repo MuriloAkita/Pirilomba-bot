@@ -45,7 +45,7 @@ class CogFunny(commands.Cog):
     async def marry(self, ctx, mention):
 
         member = None
-        
+
         try:
             member = ctx.guild.get_member(int(mention.strip('<>@')))
         except:
@@ -91,3 +91,19 @@ class CogFunny(commands.Cog):
         )
         embed.set_image(url="attachment://new_image.png")
         await ctx.send(embed=embed, file=file)
+
+    @commands.Cog.listener()
+    async def on_message(self, message):
+
+        choices = [
+            f'bom dia <@{message.author.id}> ',
+            f'boa noite :new_moon_with_face: <@{message.author.id}>',
+            f'salve salve <@{message.author.id}>',
+            f'have a nice day :wink: <@{message.author.id}>',
+            f'toing dia :wolf: <@{message.author.id}>',
+            'https://tenor.com/bItJt.gif',
+            'https://media.discordapp.net/attachments/982783169847762986/1045042662673223740/FB_IMG_1669227973344.jpg'
+        ]
+
+        if message.content.lower() == 'bom dia':
+            await message.channel.send(f'{random.choice(choices)} ')
