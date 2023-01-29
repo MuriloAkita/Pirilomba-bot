@@ -1,17 +1,16 @@
-import requests
 import random
 import discord
-from discord.ext import commands
-from discord.embeds import Embed
+import requests
 from PIL import Image
 from io import BytesIO
-from discord.utils import get
+from discord.ext import commands
 
 
 class CogFunny(commands.Cog):
 
     def __init__(self, client):
         self.client = client
+
 
     # Commands
     @commands.command()
@@ -34,6 +33,7 @@ class CogFunny(commands.Cog):
 
         await ctx.send(random.choice(response))
 
+
     @commands.command()
     async def ping(self, ctx):
         latency = round(self.client.latency * 1000)
@@ -41,6 +41,7 @@ class CogFunny(commands.Cog):
             await ctx.send(f'{latency}ms, assina uma internet melhor ai !')
         else:
             await ctx.send(f'{latency}ms, net ta ok')
+
 
     @commands.command()
     async def marry(self, ctx, mention):
@@ -92,6 +93,7 @@ class CogFunny(commands.Cog):
         )
         embed.set_image(url="attachment://new_image.png")
         await ctx.send(embed=embed, file=file)
+
 
     @commands.Cog.listener()
     async def on_message(self, message):

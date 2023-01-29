@@ -13,7 +13,8 @@ class CogChatGpt(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.histories = {}
-          
+    
+         
     @commands.command()
     async def chat(self, ctx, *, text):
         
@@ -46,11 +47,4 @@ class CogChatGpt(commands.Cog):
         
         author_history['last_update'] = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         # Imprime a resposta gerada pelo OpenAI
-        await ctx.send(response["choices"][0]["text"])
-
-        
-        
-        
-        
-        
-        
+        await ctx.send(response["choices"][0]["text"]) 

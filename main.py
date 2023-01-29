@@ -4,13 +4,12 @@ import asyncio
 import logging
 from dotenv import load_dotenv
 from discord.ext import commands
-from cogs.example import CogExample
-from cogs.funny import CogFunny
-from cogs.chatgpt import CogChatGpt
 from pretty_help import PrettyHelp
+from cogs.funny import CogFunny
+from cogs.example import CogExample
+from cogs.chatgpt import CogChatGpt
 
 load_dotenv()
-
 
 # discord.utils.setup_logging()
 handler = logging.FileHandler(
