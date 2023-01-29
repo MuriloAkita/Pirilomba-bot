@@ -5,6 +5,7 @@ from discord.ext import commands
 from discord.embeds import Embed
 from PIL import Image
 from io import BytesIO
+from discord.utils import get
 
 
 class CogFunny(commands.Cog):

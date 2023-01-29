@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 from discord.ext import commands
 from cogs.example import CogExample
 from cogs.funny import CogFunny
+from cogs.chatgpt import CogChatGpt
 from pretty_help import PrettyHelp
 
 load_dotenv()
@@ -38,6 +39,7 @@ async def main():
     async with client:
         await client.add_cog(CogExample(client))  # Cog de Exemplo *-*
         await client.add_cog(CogFunny(client))  # Funny Commands
+        await client.add_cog(CogChatGpt(client)) # ChatGPT integration
         await client.start(os.getenv('BOT_TOKEN'))
 
 
