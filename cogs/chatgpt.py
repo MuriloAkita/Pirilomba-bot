@@ -1,8 +1,9 @@
 import os
 import openai
-from datetime import datetime
 from dotenv import load_dotenv
 from discord.ext import commands
+import asyncio
+from threading import Timer
 
 load_dotenv()
 
@@ -14,16 +15,40 @@ class CogChatGpt(commands.Cog):
         self.client = client
         self.histories = {}
     
+    # Avisa ao usuário que o histórico foi limpo
+    async def sendMessage(self, ctx):
+        await ctx.send(f'<@{ctx.author.id}> seu histórico de conversas comigo foi limpo! A conversa é limpa a cada 2 minutos sem utilizar o comando `chat`.') 
+    
+    # Limpa histórico de mensagens do usuário
+    def clearHistory(self, ctx, guild, author):
+        self.histories[(guild, author)] = {'message': '', 'timer': False}
+        asyncio.run_coroutine_threadsafe(self.sendMessage(ctx), self.client.loop)
+        
          
     @commands.command()
     async def chat(self, ctx, *, text):
         
-        # verifica se já existe uma entrada no dicionário pro servidor
+        # Verifica se já existe uma entrada no dicionário pro servidor
         if not self.histories.get((ctx.guild.id, ctx.author.id)):
-            self.histories[(ctx.guild.id, ctx.author.id)] = {'message': '', 'last_update': datetime.today().strftime('%Y-%m-%d %H:%M:%S')}
-    
-        # adiciona o texto do usuário ao histórico
+            self.histories[(ctx.guild.id, ctx.author.id)] = {'message': '', 'timer': False}
+        
+        # Adiciona o texto do usuário ao histórico
         author_history = self.histories.get((ctx.guild.id, ctx.author.id))
+        
+        # Cancela o timer anterior e vincula um novo
+        if author_history['timer']:
+            author_history['timer'].cancel()
+            new_timer = Timer(120, self.clearHistory, args=[ctx, ctx.guild.id, ctx.author.id])
+            author_history['timer'] = new_timer
+            new_timer.start()
+        
+        # Criação de timer para limpar o histórico
+        if not author_history['timer']:
+            timer = Timer(120, self.clearHistory, args=[ctx, ctx.guild.id, ctx.author.id])
+            author_history['timer'] = timer
+            timer.start()
+            
+
         spaces = "\n"
         if not author_history['message']:
             spaces = ""
@@ -42,9 +67,8 @@ class CogChatGpt(commands.Cog):
             stop=[" Human:", " AI:"]
         )
      
-        # adiciona o texto da IA no histórico, depois da requisição
+        # Adiciona o texto da IA no histórico, depois da requisição
         author_history['message'] = author_history['message'] + response["choices"][0]["text"]
         
-        author_history['last_update'] = datetime.today().strftime('%Y-%m-%d %H:%M:%S')
         # Imprime a resposta gerada pelo OpenAI
         await ctx.send(response["choices"][0]["text"]) 
